@@ -35,7 +35,71 @@ function model:dump()
 end
 
 function model:tick()
+  function check()
+    local list = {};
+    for i=1, 10 do
+      for j=1, 10 do
+        if j ~= 1 and j ~= 10 and self.matrix[i][j] == self.matrix[i][j - 1] and self.matrix[i][j] == self.matrix[i][j + 1] then
+          list[1] = { x = i, y = j - 1 };
+          list[2] = { x = i , y = j };
+          list[3] = {x = i, y = j + 1};
+        elseif i ~= 1 and i ~= 10 and self.matrix[i][j] == self.matrix[i - 1][j] and self.matrix[i][j] == self.matrix[i + 1][j] then
+          list[1] = { x = i - 1, y = j };
+          list[2] = { x = i , y = j };
+          list[3] = { x = i + 1, y = j };
+        end
+      end
+    end
+    return list;
+  end;
 
+  function burn(self, coords)
+    for i=1, #coords do
+      self.matrix[tonumber(coords[i]['x'])][tonumber(coords[i]['y'])] = '*';
+    end
+    self:dump();
+  end
+
+  function shift(self, coords)
+    if coords[1]['x'] == coords[2]['x'] then
+      for i=1, #coords do
+        for j=coords[i]['x'], 1, -1 do
+          if j == 1 then self.matrix[j][coords[i]['y']] = letters[math.random(1,6)];
+          else
+            self.matrix[j][coords[i]['y']] = self.matrix[j - 1][coords[i]['y']];
+          end
+        end
+        self:dump();
+        wait();
+      end
+    else
+      local lastX = coords[#coords]['x'];
+      for i=1, #coords do
+        for j=lastX, 1, -1 do
+          if j == 1 then self.matrix[j][coords[i]['y']] = letters[math.random(1,6)];
+          else
+            self.matrix[j][coords[i]['y']] = self.matrix[j - 1][coords[i]['y']];
+          end
+        end
+        self:dump();
+        wait();
+      end
+    end
+  end
+
+  function wait()
+    os.execute("sleep " .. tonumber(1))
+  end
+
+  local match = check();
+  if match[1] then
+   burn(self, match);
+   wait();
+   shift(self, match);
+   wait();
+   self:tick();
+   wait();
+  end;
 end
 
 function model:move(from, to)
