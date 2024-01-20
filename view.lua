@@ -1,16 +1,19 @@
 local View = {};
 
-function View.printRow(index, array)
-  local temp = "";
-  for i=0, 9 do
-    temp = temp .. ' ' .. array[i];
+function View.print(self, matrix)
+  self.printHeader(matrix[0]);
+  for i=0, #matrix do
+    local temp = "";
+      for j=0, #matrix[i] do
+        temp = temp .. ' ' .. matrix[i][j];
+      end
+      print(i .. ' | ' .. temp);
   end
-  print(index .. ' | ' .. temp);
 end
 
-function View.printHeader()
+function View.printHeader(row)
   local temp = "";
-  for i=0, 9 do
+  for i=0, #row do
     temp = temp .. ' ' .. i;
   end
   print(' ' .. '   ' .. temp);
