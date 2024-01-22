@@ -1,7 +1,7 @@
 local view = require 'view';
 
 letters = { 'A', 'B', 'C', 'D', 'E', 'F' };
-stepSpeed = 0.5;
+stepSpeed = 1;
 
 local model = {
   matrix = {},
@@ -183,7 +183,9 @@ function model:tick()
   end
 
   function wait()
+    if self.isOsUnix then
     os.execute("sleep " .. tonumber(stepSpeed));
+    else os.execute("ping -n " .. tonumber(stepSpeed+1) .. " localhost > NUL") end;
   end
 
   local match = self:checkMatching();
